@@ -5,7 +5,8 @@ import { useEffect, type ReactNode } from "react";
 import { useTaxModel } from "@/hooks/useTaxModel";
 import { taka } from "@/lib/format";
 import { RULE_SETS } from "@/lib/tax/rules";
-import { useTaxStore } from "@/store/useTaxStore";
+import { useToast } from "./ui/Toast";
+import { restoreSnapshot, takeSnapshot, useTaxStore } from "@/store/useTaxStore";
 
 /** Loads saved inputs from localStorage after mount (store uses skipHydration). */
 export function StoreHydrator() {
@@ -17,6 +18,7 @@ export function StoreHydrator() {
 
 export function AppHeader() {
   const reset = useTaxStore((s) => s.reset);
+  const toast = useToast();
   const setRulesId = useTaxStore((s) => s.setRulesId);
   const { rules } = useTaxModel();
   const years = Object.values(RULE_SETS);
@@ -62,7 +64,19 @@ export function AppHeader() {
           </button>
           <button
             type="button"
-            onClick={reset}
+            onClick={() => {
+              const before = takeSnapshot();
+              reset();
+              toast.show({
+                message: "সব ইনপুট রিসেট হয়েছে",
+                tone: "info",
+                durationMs: 5000,
+                action: {
+                  label: "ফিরিয়ে আনুন",
+                  onClick: () => restoreSnapshot(before),
+                },
+              });
+            }}
             className="inline-flex items-center gap-1.5 rounded-lg px-3 py-2 text-sm text-slate-600 transition hover:bg-slate-100 hover:text-slate-900"
           >
             <RotateCcw className="size-4" /> <span className="hidden sm:inline">রিসেট</span>

@@ -7,10 +7,11 @@ import { InvestmentCard } from "@/components/InvestmentCard";
 import { PrintReport } from "@/components/PrintReport";
 import { ProfileCard } from "@/components/ProfileCard";
 import { SummaryCard } from "@/components/SummaryCard";
+import { ToastProvider } from "@/components/ui/Toast";
 
 export default function Home() {
   return (
-    <>
+    <ToastProvider>
       <StoreHydrator />
       <AppHeader />
       <main className="print:hidden">
@@ -45,6 +46,6 @@ export default function Home() {
       <Footer />
       <MobileTaxBar />
       <PrintReport />
-    </>
+    </ToastProvider>
   );
 }

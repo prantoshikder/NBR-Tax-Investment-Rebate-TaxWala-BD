@@ -78,3 +78,15 @@ export const useTaxStore = create<TaxState>()(
     },
   ),
 );
+
+export type TaxSnapshot = Pick<TaxState, "income" | "investments" | "rulesId" | "monthlyEntry">;
+
+/** Copy of everything the user entered — used for "undo" after reset. */
+export function takeSnapshot(): TaxSnapshot {
+  const { income, investments, rulesId, monthlyEntry } = useTaxStore.getState();
+  return { income, investments, rulesId, monthlyEntry };
+}
+
+export function restoreSnapshot(snapshot: TaxSnapshot): void {
+  useTaxStore.setState(snapshot);
+}

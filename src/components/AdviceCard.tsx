@@ -4,7 +4,9 @@ import { ArrowRight, CheckCircle2, Landmark, PiggyBank, Sparkles, TrendingUp } f
 import { useTaxModel } from "@/hooks/useTaxModel";
 import { taka } from "@/lib/format";
 import type { Sector } from "@/lib/tax/advisor";
+import { flash } from "@/lib/motion";
 import { useTaxStore } from "@/store/useTaxStore";
+import { useToast } from "./ui/Toast";
 
 const SECTOR: Record<Sector, { label: string; icon: typeof PiggyBank; why: (add: number) => string }> = {
   dps: {
@@ -27,6 +29,7 @@ const SECTOR: Record<Sector, { label: string; icon: typeof PiggyBank; why: (add:
 export function AdviceCard() {
   const { advice, investments } = useTaxModel();
   const setInvestments = useTaxStore((s) => s.setInvestments);
+  const toast = useToast();
 
   if (advice.status !== "ACTION_NEEDED") {
     const msg = {
@@ -48,6 +51,12 @@ export function AdviceCard() {
     const patch: Partial<Record<Sector, number>> = {};
     for (const s of advice.suggestions) patch[s.sector] = investments[s.sector] + s.additional;
     setInvestments(patch);
+    toast.show({ message: `প্ল্যানটি বসানো হয়েছে — কর কমলো ${taka(advice.totalSaving)}` });
+    flash("investments");
+    // On one-column layouts the sliders are far above; bring them into view.
+    if (window.matchMedia("(max-width: 1023px)").matches) {
+      document.getElementById("investments")?.scrollIntoView({ block: "start" });
+    }
   };
 
   return (

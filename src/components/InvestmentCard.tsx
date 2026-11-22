@@ -59,7 +59,7 @@ export function InvestmentCard() {
   const needForFull = Math.ceil(result.rebateIncomeLimit / rules.rebate.investmentRate);
 
   return (
-    <Card>
+    <Card id="investments">
       <CardHeader
         step="৩"
         title="বিনিয়োগ ও কর রেয়াত"

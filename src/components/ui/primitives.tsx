@@ -5,9 +5,9 @@ import { Info } from "lucide-react";
 import { useId, useState, type ReactNode } from "react";
 import { num, parseAmount } from "@/lib/format";
 
-export function Card({ className, children }: { className?: string; children: ReactNode }) {
+export function Card({ className, children, id }: { className?: string; children: ReactNode; id?: string }) {
   return (
-    <section className={clsx("rounded-2xl border border-slate-200/80 bg-white shadow-[0_1px_2px_rgba(15,23,42,0.04)]", className)}>
+    <section id={id} className={clsx("rounded-2xl border border-slate-200/80 bg-white shadow-[0_1px_2px_rgba(15,23,42,0.04)]", className)}>
       {children}
     </section>
   );
