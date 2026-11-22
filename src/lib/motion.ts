@@ -13,13 +13,19 @@ export function interpolate(from: number, to: number, t: number): number {
   return Math.round(from + (to - from) * easeOutCubic(t));
 }
 
+const flashTimers = new WeakMap<Element, number>();
+
 /** Briefly highlight an element (CSS `.flash`), restarting the animation if it is running. */
 export function flash(elementId: string): void {
   if (typeof document === "undefined") return;
   const el = document.getElementById(elementId);
   if (!el) return;
+  window.clearTimeout(flashTimers.get(el)); // an earlier flash must not end this one early
   el.classList.remove("flash");
   void el.offsetWidth; // force reflow so the animation restarts
   el.classList.add("flash");
-  window.setTimeout(() => el.classList.remove("flash"), 950);
+  flashTimers.set(
+    el,
+    window.setTimeout(() => el.classList.remove("flash"), 950),
+  );
 }

@@ -13,6 +13,8 @@ export function AnimatedNumber({
   className?: string;
 }) {
   const shown = useAnimatedNumber(value);
+  // At rest: a single plain text node (copy and find-in-page see the number once).
+  if (shown === value) return <span className={className}>{format(value)}</span>;
   return (
     <span className={className}>
       <span aria-hidden>{format(shown)}</span>

@@ -15,6 +15,16 @@ interface ToastItem extends ToastOptions {
 }
 
 const MAX_TOASTS = 3;
+
+/** Keep at most MAX_TOASTS; make room by dropping the oldest toast that has no action (undo). */
+function trimToasts(list: ToastItem[]): ToastItem[] {
+  const out = [...list];
+  while (out.length > MAX_TOASTS) {
+    const i = out.findIndex((t) => !t.action);
+    out.splice(i === -1 ? 0 : i, 1);
+  }
+  return out;
+}
 const ToastContext = createContext<{ show: (t: ToastOptions) => void } | null>(null);
 
 export function useToast() {
@@ -30,7 +40,7 @@ export function ToastProvider({ children }: { children: ReactNode }) {
   const dismiss = useCallback((id: number) => setItems((all) => all.filter((t) => t.id !== id)), []);
   const show = useCallback((t: ToastOptions) => {
     const id = nextId.current++;
-    setItems((all) => [...all, { ...t, id }].slice(-MAX_TOASTS));
+    setItems((all) => trimToasts([...all, { ...t, id }]));
   }, []);
   const value = useMemo(() => ({ show }), [show]);
 
@@ -51,16 +61,32 @@ export function ToastProvider({ children }: { children: ReactNode }) {
 }
 
 function ToastView({ item, dismiss }: { item: ToastItem; dismiss: (id: number) => void }) {
-  // `dismiss` is stable, so the timer isn't restarted when other toasts come and go.
+  // Timer pauses while the pointer or keyboard focus is on the toast, so there is time
+  // to reach "Undo"; it then finishes only the remaining time.
+  const [paused, setPaused] = useState(false);
+  const remaining = useRef(item.durationMs ?? 3500);
   useEffect(() => {
-    const timer = window.setTimeout(() => dismiss(item.id), item.durationMs ?? 3500);
-    return () => window.clearTimeout(timer);
-  }, [item.id, item.durationMs, dismiss]);
+    if (paused) return;
+    const started = Date.now();
+    const timer = window.setTimeout(() => dismiss(item.id), remaining.current);
+    return () => {
+      window.clearTimeout(timer);
+      remaining.current -= Date.now() - started;
+    };
+  }, [paused, item.id, dismiss]);
   const onDismiss = () => dismiss(item.id);
 
   const Icon = item.tone === "info" ? Info : CheckCircle2;
   return (
-    <div className="pointer-events-auto flex w-full max-w-md animate-[toast-in_220ms_ease-out] items-center gap-3 rounded-xl bg-slate-900 px-4 py-3 text-sm text-white shadow-2xl shadow-slate-900/30">
+    <div
+      data-toast
+      onMouseEnter={() => setPaused(true)}
+      onMouseLeave={() => setPaused(false)}
+      onFocus={() => setPaused(true)}
+      onBlur={(e) => {
+        if (!e.currentTarget.contains(e.relatedTarget as Node | null)) setPaused(false);
+      }}
+      className="pointer-events-auto flex w-full max-w-md animate-[toast-in_220ms_ease-out] items-center gap-3 rounded-xl bg-slate-900 px-4 py-3 text-sm text-white shadow-2xl shadow-slate-900/30">
       <Icon className={`size-4 shrink-0 ${item.tone === "info" ? "text-sky-300" : "text-emerald-400"}`} />
       <span className="flex-1">{item.message}</span>
       {item.action && (

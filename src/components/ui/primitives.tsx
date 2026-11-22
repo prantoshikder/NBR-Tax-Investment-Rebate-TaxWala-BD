@@ -2,7 +2,7 @@
 
 import clsx from "clsx";
 import { Info } from "lucide-react";
-import { useId, useState, type ReactNode } from "react";
+import { useEffect, useId, useRef, useState, type ReactNode } from "react";
 import { num, parseAmount } from "@/lib/format";
 
 export function Card({ className, children, id }: { className?: string; children: ReactNode; id?: string }) {
@@ -46,17 +46,26 @@ export function CardHeader({
 export function Hint({ children }: { children: ReactNode }) {
   const [open, setOpen] = useState(false);
   const id = useId();
+  const root = useRef<HTMLSpanElement>(null);
+
+  // iOS Safari doesn't focus (so never blurs) a tapped button — close on any tap outside.
+  useEffect(() => {
+    if (!open) return;
+    const onDown = (e: PointerEvent) => {
+      if (!root.current?.contains(e.target as Node)) setOpen(false);
+    };
+    document.addEventListener("pointerdown", onDown);
+    return () => document.removeEventListener("pointerdown", onDown);
+  }, [open]);
+
   return (
-    <span className="group relative inline-flex align-middle">
+    <span ref={root} className="group relative inline-flex align-middle">
       <button
         type="button"
         aria-label="বিস্তারিত"
         aria-describedby={id}
         aria-expanded={open}
-        onClick={(e) => {
-          e.preventDefault(); // don't let a parent <label> focus its input
-          setOpen((o) => !o);
-        }}
+        onClick={() => setOpen((o) => !o)}
         onBlur={() => setOpen(false)}
         onKeyDown={(e) => e.key === "Escape" && setOpen(false)}
         className="-m-1 rounded-full p-1 text-slate-400 transition hover:text-slate-600 focus-visible:outline-2 focus-visible:outline-emerald-500"
@@ -99,10 +108,11 @@ export function AmountField({
   const [draft, setDraft] = useState<string | null>(null);
   return (
     <div>
-      <label htmlFor={id} className="mb-1.5 flex items-center gap-1.5 text-sm font-medium text-slate-700">
-        {label}
+      {/* Hint sits beside the label, not inside it, so it stays out of the input's accessible name. */}
+      <div className="mb-1.5 flex items-center gap-1.5 text-sm font-medium text-slate-700">
+        <label htmlFor={id}>{label}</label>
         {hint && <Hint>{hint}</Hint>}
-      </label>
+      </div>
       <div className="flex items-center rounded-xl border border-slate-200 bg-slate-50/60 px-3 transition focus-within:border-emerald-500 focus-within:bg-white focus-within:ring-4 focus-within:ring-emerald-500/10">
         <span className="text-slate-400">৳</span>
         <input
@@ -139,7 +149,8 @@ export function Segmented<T extends string>({
   options: { value: T; label: string }[];
   size?: "sm" | "md";
 }) {
-  const index = Math.max(0, options.findIndex((o) => o.value === value));
+  const found = options.findIndex((o) => o.value === value);
+  const index = Math.max(0, found);
   const n = options.length;
   return (
     <div
@@ -150,7 +161,11 @@ export function Segmented<T extends string>({
       {/* Sliding highlight: equal-width columns, so position follows the index. */}
       <span
         aria-hidden
-        className="absolute inset-y-1 left-1 rounded-lg bg-white shadow-sm transition-transform duration-300 ease-out"
+        data-pill
+        className={clsx(
+          "absolute inset-y-1 left-1 rounded-lg bg-white shadow-sm transition-[transform,opacity] duration-300 ease-out",
+          found === -1 && "opacity-0",
+        )}
         style={{ width: `calc((100% - 0.5rem) / ${n})`, transform: `translateX(${index * 100}%)` }}
       />
       {options.map((o) => (
