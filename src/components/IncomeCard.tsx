@@ -4,6 +4,7 @@ import { useTaxModel } from "@/hooks/useTaxModel";
 import { lakh, taka } from "@/lib/format";
 import type { IncomeInput } from "@/lib/tax/types";
 import { useTaxStore } from "@/store/useTaxStore";
+import { AnimatedNumber } from "./ui/AnimatedNumber";
 import { AmountField, Card, CardHeader, Segmented } from "./ui/primitives";
 
 type RecurringKey = "basicSalary" | "houseRent" | "medical" | "conveyance" | "employerPF" | "otherSalary";
@@ -88,15 +89,15 @@ export function IncomeCard() {
       <dl className="grid grid-cols-3 divide-x divide-slate-100 border-t border-slate-100 text-center">
         <div className="px-2 py-3">
           <dt className="text-xs text-slate-500">মোট বেতন</dt>
-          <dd className="num mt-0.5 font-semibold text-slate-900">{taka(result.grossSalary)}</dd>
+          <dd className="num mt-0.5 font-semibold text-slate-900"><AnimatedNumber value={result.grossSalary} format={taka} /></dd>
         </div>
         <div className="px-2 py-3">
           <dt className="text-xs text-slate-500">{isGovt ? "করমুক্ত ভাতা" : `ছাড় (১/৩, সর্বোচ্চ ${lakh(rules.salaryExemption.cap)})`}</dt>
-          <dd className="num mt-0.5 font-semibold text-emerald-600">− {taka(result.salaryExemption)}</dd>
+          <dd className="num mt-0.5 font-semibold text-emerald-600"><AnimatedNumber value={result.salaryExemption} format={(n) => `− ${taka(n)}`} /></dd>
         </div>
         <div className="px-2 py-3">
           <dt className="text-xs text-slate-500">মোট করযোগ্য আয়</dt>
-          <dd className="num mt-0.5 font-semibold text-slate-900">{taka(result.totalIncome)}</dd>
+          <dd className="num mt-0.5 font-semibold text-slate-900"><AnimatedNumber value={result.totalIncome} format={taka} /></dd>
         </div>
       </dl>
     </Card>

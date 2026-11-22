@@ -4,6 +4,7 @@ import { useState } from "react";
 import { useTaxModel } from "@/hooks/useTaxModel";
 import { lakh, num, pct, taka } from "@/lib/format";
 import { Card, CardHeader } from "./ui/primitives";
+import { AnimatedNumber } from "./ui/AnimatedNumber";
 
 // Palette validated with the dataviz validator (light surface): teal / orange pass CVD + chroma checks.
 const TAKE_HOME = "#0d9488";
@@ -29,22 +30,22 @@ export function BreakdownCard() {
           আপনার প্রতি ১০০ টাকা আয়ের মধ্যে কর যায় <b className="num text-slate-900">৳{(taxShare * 100).toFixed(1)}</b>
         </p>
         <div className="mt-3 flex h-3 gap-[2px] overflow-hidden rounded" role="img" aria-label={`হাতে থাকে ${taka(takeHome)}, কর ${taka(result.netTax)}`}>
-          <div className="h-full rounded-l" style={{ width: `${(1 - taxShare) * 100}%`, background: TAKE_HOME }} />
+          <div className="h-full rounded-l transition-[width] duration-500 ease-out" style={{ width: `${(1 - taxShare) * 100}%`, background: TAKE_HOME }} />
           {result.netTax > 0 && (
-            <div className="h-full min-w-1 rounded-r" style={{ width: `${taxShare * 100}%`, background: TAX }} />
+            <div className="h-full min-w-1 rounded-r transition-[width] duration-500 ease-out" style={{ width: `${taxShare * 100}%`, background: TAX }} />
           )}
         </div>
         <div className="mt-2.5 flex flex-wrap gap-x-5 gap-y-1 text-xs text-slate-600">
           <span className="flex items-center gap-1.5">
             <i className="size-2.5 rounded-sm" style={{ background: TAKE_HOME }} /> হাতে থাকে{" "}
-            <b className="num text-slate-900">{taka(takeHome)}</b>
+            <AnimatedNumber value={takeHome} format={taka} className="num font-bold text-slate-900" />
           </span>
           <span className="flex items-center gap-1.5">
-            <i className="size-2.5 rounded-sm" style={{ background: TAX }} /> কর <b className="num text-slate-900">{taka(result.netTax)}</b>
+            <i className="size-2.5 rounded-sm" style={{ background: TAX }} /> কর <AnimatedNumber value={result.netTax} format={taka} className="num font-bold text-slate-900" />
           </span>
           {result.rebate > 0 && (
             <span className="text-slate-500">
-              রেয়াতে বাঁচল <b className="num text-slate-900">{taka(result.rebate)}</b>
+              রেয়াতে বাঁচল <AnimatedNumber value={result.rebate} format={taka} className="num font-bold text-slate-900" />
             </span>
           )}
         </div>
@@ -98,7 +99,7 @@ export function BreakdownCard() {
                 মোট
               </td>
               <td className="num px-3 py-2.5 text-right">{num(result.totalIncome)}</td>
-              <td className="num px-3 py-2.5 text-right">{taka(result.grossTax)}</td>
+              <td className="num px-3 py-2.5 text-right"><AnimatedNumber value={result.grossTax} format={taka} /></td>
             </tr>
           </tbody>
         </table>

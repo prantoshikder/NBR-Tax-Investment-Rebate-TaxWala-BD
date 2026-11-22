@@ -42,13 +42,36 @@ export function CardHeader({
   );
 }
 
+/** Info tooltip: hover on desktop, tap/focus on touch & keyboard. Escape or blur closes it. */
 export function Hint({ children }: { children: ReactNode }) {
+  const [open, setOpen] = useState(false);
+  const id = useId();
   return (
     <span className="group relative inline-flex align-middle">
-      <Info className="size-3.5 text-slate-400 group-hover:text-slate-600" aria-hidden />
+      <button
+        type="button"
+        aria-label="বিস্তারিত"
+        aria-describedby={id}
+        aria-expanded={open}
+        onClick={(e) => {
+          e.preventDefault(); // don't let a parent <label> focus its input
+          setOpen((o) => !o);
+        }}
+        onBlur={() => setOpen(false)}
+        onKeyDown={(e) => e.key === "Escape" && setOpen(false)}
+        className="-m-1 rounded-full p-1 text-slate-400 transition hover:text-slate-600 focus-visible:outline-2 focus-visible:outline-emerald-500"
+      >
+        <Info className="size-3.5" aria-hidden />
+      </button>
       <span
+        id={id}
         role="tooltip"
-        className="pointer-events-none absolute bottom-full left-1/2 z-20 mb-2 w-60 -translate-x-1/2 rounded-lg bg-slate-900 px-3 py-2 text-xs font-normal leading-relaxed text-slate-100 opacity-0 shadow-lg transition group-hover:opacity-100"
+        className={clsx(
+          "pointer-events-none absolute bottom-full left-1/2 z-20 mb-2 w-60 -translate-x-1/2 rounded-lg bg-slate-900 px-3 py-2 text-xs font-normal leading-relaxed text-slate-100 shadow-lg transition duration-150",
+          open
+            ? "translate-y-0 opacity-100"
+            : "translate-y-1 opacity-0 group-hover:translate-y-0 group-hover:opacity-100",
+        )}
       >
         {children}
       </span>
@@ -116,8 +139,20 @@ export function Segmented<T extends string>({
   options: { value: T; label: string }[];
   size?: "sm" | "md";
 }) {
+  const index = Math.max(0, options.findIndex((o) => o.value === value));
+  const n = options.length;
   return (
-    <div className="inline-flex rounded-xl bg-slate-100 p-1" role="radiogroup">
+    <div
+      className="relative inline-grid rounded-xl bg-slate-100 p-1"
+      style={{ gridTemplateColumns: `repeat(${n}, minmax(0, 1fr))` }}
+      role="radiogroup"
+    >
+      {/* Sliding highlight: equal-width columns, so position follows the index. */}
+      <span
+        aria-hidden
+        className="absolute inset-y-1 left-1 rounded-lg bg-white shadow-sm transition-transform duration-300 ease-out"
+        style={{ width: `calc((100% - 0.5rem) / ${n})`, transform: `translateX(${index * 100}%)` }}
+      />
       {options.map((o) => (
         <button
           key={o.value}
@@ -126,9 +161,9 @@ export function Segmented<T extends string>({
           aria-checked={value === o.value}
           onClick={() => onChange(o.value)}
           className={clsx(
-            "rounded-lg font-medium transition",
+            "relative z-10 whitespace-nowrap rounded-lg font-medium transition-colors duration-200 active:scale-[0.97]",
             size === "sm" ? "px-2.5 py-1 text-xs" : "px-3.5 py-1.5 text-sm",
-            value === o.value ? "bg-white text-slate-900 shadow-sm" : "text-slate-500 hover:text-slate-700",
+            value === o.value ? "text-slate-900" : "text-slate-500 hover:text-slate-700",
           )}
         >
           {o.label}
@@ -155,7 +190,7 @@ export function Switch({
       role="switch"
       aria-checked={checked}
       onClick={() => onChange(!checked)}
-      className="flex w-full items-center justify-between gap-4 rounded-xl border border-slate-200 px-4 py-3 text-left transition hover:border-slate-300"
+      className="flex w-full items-center justify-between gap-4 rounded-xl border border-slate-200 px-4 py-3 text-left transition hover:border-slate-300 active:scale-[0.99]"
     >
       <span>
         <span className="block text-sm font-medium text-slate-800">{label}</span>
@@ -164,7 +199,7 @@ export function Switch({
       <span className={clsx("relative h-6 w-11 shrink-0 rounded-full transition", checked ? "bg-emerald-500" : "bg-slate-200")}>
         <span
           className={clsx(
-            "absolute top-0.5 size-5 rounded-full bg-white shadow transition-all",
+            "absolute top-0.5 size-5 rounded-full bg-white shadow transition-all duration-200 ease-out",
             checked ? "left-[22px]" : "left-0.5",
           )}
         />

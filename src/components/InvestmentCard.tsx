@@ -6,6 +6,8 @@ import { useTaxModel } from "@/hooks/useTaxModel";
 import { lakh, num, taka } from "@/lib/format";
 import type { InvestmentInput } from "@/lib/tax/types";
 import { useTaxStore } from "@/store/useTaxStore";
+import { AnimatedNumber } from "./ui/AnimatedNumber";
+import { Collapse } from "./ui/Collapse";
 import { AmountField, Card, CardHeader, RangeSlider } from "./ui/primitives";
 
 type Key = keyof InvestmentInput;
@@ -70,12 +72,15 @@ export function InvestmentCard() {
         <div className="flex items-end justify-between gap-2 text-sm">
           <span className="text-emerald-900">রেয়াত কোটা ব্যবহার হয়েছে</span>
           <span className="num font-semibold text-emerald-900">
-            {taka(used)} <span className="font-normal text-emerald-700/70">/ {taka(result.rebateIncomeLimit)}</span>
+            <AnimatedNumber value={used} format={taka} />{" "}
+            <span className="font-normal text-emerald-700/70">
+              / <AnimatedNumber value={result.rebateIncomeLimit} format={taka} />
+            </span>
           </span>
         </div>
         <div className="mt-2 h-2.5 overflow-hidden rounded-full bg-white ring-1 ring-emerald-100">
           <div
-            className="h-full rounded-full bg-gradient-to-r from-emerald-500 to-teal-500 transition-[width] duration-500"
+            className="h-full rounded-full bg-gradient-to-r from-emerald-500 to-teal-500 transition-[width] duration-500 ease-out"
             style={{ width: `${fill}%` }}
           />
         </div>
@@ -94,7 +99,7 @@ export function InvestmentCard() {
             <div key={s.key}>
               <div className="flex items-baseline justify-between gap-3">
                 <span className="text-sm font-medium text-slate-800">{s.label}</span>
-                <span className="num text-[15px] font-semibold text-emerald-600">{taka(v)}</span>
+                <AnimatedNumber value={v} format={taka} className="num text-[15px] font-semibold text-emerald-600" />
               </div>
               <RangeSlider
                 label={s.label}
@@ -116,7 +121,7 @@ export function InvestmentCard() {
         <button
           type="button"
           onClick={() => setMore((m) => !m)}
-          className="mt-3 flex w-full items-center justify-between rounded-xl border border-dashed border-slate-300 px-4 py-2.5 text-sm text-slate-600 transition hover:border-slate-400 hover:text-slate-800"
+          className="mt-3 flex w-full items-center justify-between rounded-xl border border-dashed active:scale-[0.99] border-slate-300 px-4 py-2.5 text-sm text-slate-600 transition hover:border-slate-400 hover:text-slate-800"
           aria-expanded={more}
         >
           <span>
@@ -127,10 +132,10 @@ export function InvestmentCard() {
               </span>
             )}
           </span>
-          <ChevronDown className={`size-4 transition ${more ? "rotate-180" : ""}`} />
+          <ChevronDown className={`size-4 transition-transform duration-300 ${more ? "rotate-180" : ""}`} />
         </button>
-        {more && (
-          <div className="mt-4 grid gap-4 sm:grid-cols-2">
+        <Collapse open={more}>
+          <div className="grid gap-4 pt-4 sm:grid-cols-2">
             {extras.map((e) => (
               <AmountField
                 key={e.key}
@@ -142,7 +147,7 @@ export function InvestmentCard() {
               />
             ))}
           </div>
-        )}
+        </Collapse>
         <p className="mt-4 text-xs text-slate-400">
           মোট বিনিয়োগ {num(result.totalInvestment)} · শুধু আয়বর্ষের মধ্যে (১ জুলাই – ৩০ জুন) করা বিনিয়োগ গণ্য হয়।
         </p>

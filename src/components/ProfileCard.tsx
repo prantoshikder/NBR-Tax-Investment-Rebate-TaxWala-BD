@@ -5,6 +5,7 @@ import { useTaxModel } from "@/hooks/useTaxModel";
 import { taka } from "@/lib/format";
 import type { EmployerType, TaxpayerCategory } from "@/lib/tax/types";
 import { useTaxStore } from "@/store/useTaxStore";
+import { AnimatedNumber } from "./ui/AnimatedNumber";
 import { Card, CardHeader, Hint, Segmented, Switch } from "./ui/primitives";
 
 const CATEGORIES: { value: TaxpayerCategory; label: string }[] = [
@@ -31,7 +32,7 @@ export function ProfileCard() {
                 type="button"
                 onClick={() => setIncome({ category: c.value })}
                 aria-pressed={active}
-                className={`rounded-xl border px-3 py-2.5 text-left text-sm transition ${
+                className={`rounded-xl border px-3 py-2.5 text-left text-sm transition duration-200 active:scale-[0.98] ${
                   active
                     ? "border-emerald-500 bg-emerald-50/70 text-emerald-900 ring-4 ring-emerald-500/10"
                     : "border-slate-200 text-slate-600 hover:border-slate-300"
@@ -78,16 +79,16 @@ export function ProfileCard() {
                 type="button"
                 aria-label="কমান"
                 onClick={() => setIncome({ disabledDependants: Math.max(0, income.disabledDependants - 1) })}
-                className="grid size-7 place-items-center rounded-lg border border-slate-200 text-slate-600 hover:bg-slate-50"
+                className="grid size-7 place-items-center rounded-lg border border-slate-200 text-slate-600 transition hover:bg-slate-50 active:scale-90"
               >
                 <Minus className="size-3.5" />
               </button>
-              <span className="num w-4 text-center font-semibold">{income.disabledDependants}</span>
+              <span key={income.disabledDependants} className="num w-4 animate-[fade-in_200ms_ease-out] text-center font-semibold">{income.disabledDependants}</span>
               <button
                 type="button"
                 aria-label="বাড়ান"
                 onClick={() => setIncome({ disabledDependants: Math.min(10, income.disabledDependants + 1) })}
-                className="grid size-7 place-items-center rounded-lg border border-slate-200 text-slate-600 hover:bg-slate-50"
+                className="grid size-7 place-items-center rounded-lg border border-slate-200 text-slate-600 transition hover:bg-slate-50 active:scale-90"
               >
                 <Plus className="size-3.5" />
               </button>
@@ -96,7 +97,7 @@ export function ProfileCard() {
         </div>
 
         <p className="rounded-xl bg-slate-50 px-4 py-2.5 text-sm text-slate-600">
-          আপনার করমুক্ত আয়ের সীমা: <b className="num text-slate-900">{taka(result.threshold)}</b>
+          আপনার করমুক্ত আয়ের সীমা: <AnimatedNumber value={result.threshold} format={taka} className="num font-bold text-slate-900" />
         </p>
       </div>
     </Card>
