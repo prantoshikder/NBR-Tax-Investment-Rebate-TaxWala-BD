@@ -1,0 +1,65 @@
+@import "tailwindcss";
+
+@theme inline {
+  --font-sans: var(--font-bangla), var(--font-inter), ui-sans-serif, system-ui, sans-serif;
+  --font-num: var(--font-inter), ui-sans-serif, system-ui, sans-serif;
+}
+
+body {
+  background-image:
+    radial-gradient(60rem 30rem at 100% -10%, rgb(16 185 129 / 0.07), transparent 60%),
+    radial-gradient(40rem 24rem at -10% 10%, rgb(14 165 233 / 0.05), transparent 60%);
+  background-attachment: fixed;
+}
+
+/* Figures: Latin digits in Inter with tabular widths so numbers don't jitter while sliding. */
+.num {
+  font-family: var(--font-num);
+  font-variant-numeric: tabular-nums;
+  letter-spacing: -0.01em;
+}
+
+/* ---------- range slider ---------- */
+.range {
+  -webkit-appearance: none;
+  appearance: none;
+  height: 6px;
+  border-radius: 9999px;
+  background: linear-gradient(to right, #10b981 0 var(--fill), #e2e8f0 var(--fill) 100%);
+  cursor: pointer;
+  outline: none;
+}
+.range::-webkit-slider-thumb {
+  -webkit-appearance: none;
+  width: 22px;
+  height: 22px;
+  border-radius: 9999px;
+  background: #fff;
+  border: 2px solid #10b981;
+  box-shadow: 0 2px 6px rgb(15 23 42 / 0.18);
+  transition: transform 0.15s;
+}
+.range::-moz-range-thumb {
+  width: 18px;
+  height: 18px;
+  border-radius: 9999px;
+  background: #fff;
+  border: 2px solid #10b981;
+  box-shadow: 0 2px 6px rgb(15 23 42 / 0.18);
+}
+.range:active::-webkit-slider-thumb {
+  transform: scale(1.12);
+}
+.range:focus-visible::-webkit-slider-thumb {
+  box-shadow: 0 0 0 6px rgb(16 185 129 / 0.2);
+}
+
+@media print {
+  @page {
+    size: A4;
+    margin: 16mm;
+  }
+  body {
+    background: #fff;
+  }
+}
