@@ -115,7 +115,9 @@ npm run dev        # http://localhost:3000
 | `npm run dev` | Start the development server |
 | `npm test` | Run all tests (Vitest) |
 | `npm run lint` | Run ESLint |
-| `npm run build` | Make a production build |
+| `npm run build` | Cloudflare (OpenNext) production build |
+| `npm run build:next` | Plain Next.js build |
+| `npm run preview` | Run the Cloudflare build locally |
 
 Requires Node.js 20.9 or later.
 
