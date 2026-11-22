@@ -1,7 +1,8 @@
 "use client";
 
 import { create } from "zustand";
-import { persist } from "zustand/middleware";
+import { createJSONStorage, persist } from "zustand/middleware";
+import { getDebouncedLocalStorage } from "./debouncedStorage";
 import { DEFAULT_RULES_ID } from "@/lib/tax/rules";
 import type { IncomeInput, InvestmentInput } from "@/lib/tax/types";
 
@@ -59,6 +60,8 @@ export const useTaxStore = create<TaxState>()(
     {
       name: "nbr-tax-simulator:v1",
       version: 1,
+      // Debounced so dragging a slider doesn't serialise state to disk on every tick.
+      storage: createJSONStorage(() => getDebouncedLocalStorage()),
       // Rehydrated manually after mount (see <StoreHydrator/>) so the server HTML and the
       // first client render match — no hydration mismatch.
       skipHydration: true,
