@@ -47,3 +47,7 @@ next-env.d.ts
 AGENTS.md
 
 nbr_tax_simulator_a_to_z_blueprint.md
+yarn.lock
+package-lock.json
+
+config/
