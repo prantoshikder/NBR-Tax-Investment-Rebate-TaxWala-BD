@@ -29,6 +29,10 @@ export function useAnimatedNumber(value: number, durationMs = COUNT_UP_MS): numb
   const [display, setDisplay] = useState(value);
   const shown = useRef(value);
 
+  // While not animating, keep `display` in step with `value` (React's "adjust state during
+  // render" pattern), so switching reduced motion off later can't reveal a stale number.
+  if (reduced && display !== value) setDisplay(value);
+
   useEffect(() => {
     if (reduced) {
       shown.current = value;
