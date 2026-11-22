@@ -61,6 +61,11 @@ export function FilingCard() {
           );
         })}
       </ol>
+      {today !== null && today < rules.filingWindows[0].from && (
+        <p className="mt-3 text-xs text-sky-700">
+          এই আয়বর্ষের রিটার্ন দাখিল শুরু হবে {short(rules.filingWindows[0].from)} থেকে — এখন বিনিয়োগ পরিকল্পনার সময়।
+        </p>
+      )}
       {outcome?.afterLastWindow && (
         <p className="mt-3 text-xs text-orange-700">
           স্বাভাবিক সময় পেরিয়ে গেছে — স্বপ্রণোদিত বিলম্বিত রিটার্নে ১০% বা ৳৫,০০০ (যেটি বেশি) অতিরিক্ত কর।

@@ -1,15 +1,17 @@
 import { TY_2026_27 } from "./ty2026-27";
+import { TY_2027_28 } from "./ty2027-28";
 import type { TaxRules } from "./types";
 
 /**
  * Only rule sets verified against an official NBR document are listed.
- * Tax year 2027-28 (income year 2026-27) will be added once its figures are verified
- * from Finance Act 2026 / the next Nirdeshika.
+ * Insertion order = order in the year selector.
  */
 export const RULE_SETS: Record<string, TaxRules> = {
   [TY_2026_27.id]: TY_2026_27,
+  [TY_2027_28.id]: TY_2027_28,
 };
 
+/** Return season for income year 2025-26 is open now, so it stays the default. */
 export const DEFAULT_RULES_ID = TY_2026_27.id;
 
 export function getRules(id: string): TaxRules {
