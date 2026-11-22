@@ -54,6 +54,61 @@ body {
   box-shadow: 0 0 0 6px rgb(16 185 129 / 0.2);
 }
 
+/* ---------- motion ---------- */
+html {
+  scroll-behavior: smooth;
+}
+/* Anchored sections clear the sticky header. */
+[id] {
+  scroll-margin-top: 88px;
+}
+
+@keyframes flash-ring {
+  0% {
+    box-shadow: 0 0 0 0 rgb(16 185 129 / 0.45);
+  }
+  100% {
+    box-shadow: 0 0 0 14px rgb(16 185 129 / 0);
+  }
+}
+.flash {
+  animation: flash-ring 900ms ease-out;
+}
+
+@keyframes toast-in {
+  from {
+    opacity: 0;
+    transform: translateY(12px) scale(0.98);
+  }
+  to {
+    opacity: 1;
+    transform: none;
+  }
+}
+@keyframes fade-in {
+  from {
+    opacity: 0;
+    transform: translateY(4px);
+  }
+  to {
+    opacity: 1;
+    transform: none;
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  html {
+    scroll-behavior: auto;
+  }
+  *,
+  *::before,
+  *::after {
+    animation-duration: 0.01ms !important;
+    animation-iteration-count: 1 !important;
+    transition-duration: 0.01ms !important;
+  }
+}
+
 @media print {
   @page {
     size: A4;
