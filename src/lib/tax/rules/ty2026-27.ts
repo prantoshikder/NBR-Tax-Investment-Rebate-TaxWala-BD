@@ -18,6 +18,7 @@ export const TY_2026_27: TaxRules = {
   incomeYear: { start: "2025-07-01", end: "2026-06-30" },
   verifiedOn: "2026-11-22",
   basis: "NBR আয়কর নির্দেশিকা ২০২৬-২৭",
+  purpose: "এখন যে রিটার্ন দাখিল হচ্ছে (জুলাই ২০২৫ – জুন ২০২৬)",
   sources: [
     {
       title: "আয়কর নির্দেশিকা ২০২৬-২০২৭ (NBR)",

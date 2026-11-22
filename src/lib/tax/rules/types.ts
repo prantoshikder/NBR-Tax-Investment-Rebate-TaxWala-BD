@@ -23,6 +23,8 @@ export interface TaxRules {
   verifiedOn: string;
   /** Short Bangla name of the governing source, shown in the UI. */
   basis: string;
+  /** One line on what this year is for, shown in the year picker. */
+  purpose: string;
   sources: { title: string; url: string }[];
 
   thresholds: Record<TaxpayerCategory, number>;

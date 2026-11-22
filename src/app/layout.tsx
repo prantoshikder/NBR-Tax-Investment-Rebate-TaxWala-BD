@@ -16,7 +16,8 @@ const inter = Inter({
 });
 
 export const metadata: Metadata = {
-  title: "আয়কর ক্যালকুলেটর ২০২৬-২৭ | করহিসাব — Bangladesh Income Tax & Rebate Calculator",
+  title:
+    "আয়কর ক্যালকুলেটর ২০২৬-২৭ | করহিসাব — Bangladesh Income Tax & Rebate Calculator",
   description:
     "বাংলাদেশের চাকরিজীবীদের জন্য NBR আয়কর নির্দেশিকা ২০২৬-২৭ অনুযায়ী আয়কর ও বিনিয়োগ রেয়াত ক্যালকুলেটর। ডিপিএস, সঞ্চয়পত্র, শেয়ারে কত বিনিয়োগে কত কর বাঁচবে — সাথে সাথে দেখুন।",
   keywords: [
@@ -28,7 +29,8 @@ export const metadata: Metadata = {
   ],
   openGraph: {
     title: "করহিসাব — আয়কর ও বিনিয়োগ রেয়াত ক্যালকুলেটর",
-    description: "NBR-এর সর্বশেষ নিয়মে আয়কর হিসাব ও কর বাঁচানোর বিনিয়োগ প্ল্যান।",
+    description:
+      "NBR-এর সর্বশেষ নিয়মে আয়কর হিসাব ও কর বাঁচানোর বিনিয়োগ প্ল্যান।",
     locale: "bn_BD",
     type: "website",
   },
@@ -40,8 +42,17 @@ export const viewport: Viewport = {
 
 export default function RootLayout({ children }: LayoutProps<"/">) {
   return (
-    <html lang="bn" className={`${bangla.variable} ${inter.variable} h-full antialiased`}>
-      <body className="min-h-full bg-slate-50 font-sans text-slate-900">{children}</body>
+    <html
+      lang="bn"
+      className={`${bangla.variable} ${inter.variable} h-full antialiased`}
+    >
+      <body
+        suppressContentEditableWarning
+        suppressHydrationWarning
+        className="min-h-full bg-slate-50 font-sans text-slate-900"
+      >
+        {children}
+      </body>
     </html>
   );
 }

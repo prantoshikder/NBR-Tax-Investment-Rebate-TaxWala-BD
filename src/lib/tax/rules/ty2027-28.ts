@@ -24,6 +24,7 @@ export const TY_2027_28: TaxRules = {
   incomeYear: { start: "2026-07-01", end: "2027-06-30" },
   verifiedOn: "2026-11-22",
   basis: "অর্থ আইন ২০২৬, তফসিল-২",
+  purpose: "চলতি বছর — বিনিয়োগ পরিকল্পনার জন্য (জুলাই ২০২৬ – জুন ২০২৭)",
   sources: [
     { title: "Finance Act, 2026 (NBR)", url: "https://nbr.gov.bd/uploads/acts/Finance_Act_2026.pdf" },
     {

@@ -1,12 +1,13 @@
 "use client";
 
-import { Calculator, Printer, RotateCcw } from "lucide-react";
+import { CalendarDays, Calculator, Printer, RotateCcw } from "lucide-react";
 import { useEffect, type ReactNode } from "react";
 import { useTaxModel } from "@/hooks/useTaxModel";
 import { taka } from "@/lib/format";
 import { flash } from "@/lib/motion";
 import { RULE_SETS } from "@/lib/tax/rules";
 import { AnimatedNumber } from "./ui/AnimatedNumber";
+import { Select } from "./ui/Select";
 import { useToast } from "./ui/Toast";
 import { restoreSnapshot, takeSnapshot, useTaxStore } from "@/store/useTaxStore";
 
@@ -38,23 +39,16 @@ export function AppHeader() {
         </div>
         <div className="flex items-center gap-2">
           {years.length > 1 ? (
-            <label className="flex items-center gap-2 text-xs text-slate-500">
-              <span className="hidden md:inline">হিসাবের বছর</span>
-              <select
-                value={rules.id}
-                onChange={(e) => {
-                  setRulesId(e.target.value);
-                  flash("summary");
-                }}
-                className="rounded-lg border border-emerald-200 bg-emerald-50 px-2.5 py-1.5 text-xs font-medium text-emerald-800 outline-none focus:ring-4 focus:ring-emerald-500/15"
-              >
-                {years.map((r) => (
-                  <option key={r.id} value={r.id} title={r.label}>
-                    {r.shortLabel}
-                  </option>
-                ))}
-              </select>
-            </label>
+            <Select
+              label="হিসাবের বছর"
+              icon={<CalendarDays className="size-4" />}
+              value={rules.id}
+              onChange={(id) => {
+                setRulesId(id);
+                flash("summary");
+              }}
+              options={years.map((r) => ({ value: r.id, label: r.shortLabel, description: r.purpose }))}
+            />
           ) : (
             <span className="hidden rounded-full bg-emerald-50 px-3 py-1 text-xs font-medium text-emerald-700 ring-1 ring-emerald-200 md:inline">
               {rules.label}
